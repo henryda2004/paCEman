@@ -2,13 +2,9 @@
 #include <winsock2.h>
 #include <string.h>
 #include <process.h>
+#include "constants.h"
 
 #define MAX_CLIENTS 10
-
-struct ClientInfo {
-    SOCKET clientSocket;
-    int clientID;
-};
 
 unsigned __stdcall ClientHandler(void* data) {
     struct ClientInfo* client = (struct ClientInfo*)data;
@@ -69,6 +65,7 @@ int main() {
     }
 
     printf("Esperando conexiones entrantes...\n");
+
 
     while (1) {
         if (clientCount < MAX_CLIENTS) {
