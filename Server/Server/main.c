@@ -1,11 +1,43 @@
 #include <stdio.h>
 #include <winsock2.h>
+#include <string.h>
+#include <process.h>
+
+#define MAX_CLIENTS 10
+
+struct ClientInfo {
+    SOCKET clientSocket;
+    int clientID;
+};
+
+unsigned __stdcall ClientHandler(void* data) {
+    struct ClientInfo* client = (struct ClientInfo*)data;
+
+    while (1) {
+        char message[1000];
+        int result = recv(client->clientSocket, message, sizeof(message), 0);
+
+        if (result <= 0) {
+            printf("Cliente %d desconectado.\n", client->clientID);
+            closesocket(client->clientSocket);
+            _endthreadex(0);
+            return 0;
+        }
+
+        message[result] = '\0';
+        printf("Cliente %d dice: %s", client->clientID, message);
+    }
+
+    return 0;
+}
 
 int main() {
     WSADATA wsaData;
-    SOCKET serverSocket, clientSocket;
+    SOCKET serverSocket;
     struct sockaddr_in serverAddr, clientAddr;
     int clientAddrLen = sizeof(clientAddr);
+    int clientCount = 0;
+    struct ClientInfo clients[MAX_CLIENTS];
 
     if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
         printf("Error al inicializar Winsock\n");
@@ -29,7 +61,7 @@ int main() {
         return 1;
     }
 
-    if (listen(serverSocket, 5) == SOCKET_ERROR) {
+    if (listen(serverSocket, MAX_CLIENTS) == SOCKET_ERROR) {
         printf("Error al poner el socket en modo escucha\n");
         closesocket(serverSocket);
         WSACleanup();
@@ -38,35 +70,50 @@ int main() {
 
     printf("Esperando conexiones entrantes...\n");
 
-    clientSocket = accept(serverSocket, (struct sockaddr*)&clientAddr, &clientAddrLen);
-    if (clientSocket == INVALID_SOCKET) {
-        printf("Error al aceptar la conexión entrante\n");
-        closesocket(serverSocket);
-        WSACleanup();
-        return 1;
-    }
-
-    printf("Cliente conectado\n");
-
-    // Envía mensajes al cliente de forma autónoma
-// Envía mensajes al cliente de forma autónoma
     while (1) {
-        char message[1000];
-        printf("Escribe un mensaje para el cliente (o 'exit' para salir): ");
-        gets(message);
+        if (clientCount < MAX_CLIENTS) {
+            clients[clientCount].clientSocket = accept(serverSocket, (struct sockaddr*)&clientAddr, &clientAddrLen);
+            if (clients[clientCount].clientSocket == INVALID_SOCKET) {
+                printf("Error al aceptar la conexión entrante\n");
+            } else {
+                clients[clientCount].clientID = clientCount;
+                printf("Cliente conectado con ID %d\n", clientCount);
 
-        if (strcmp(message, "exit") == 0) {
-            break; // Salir del bucle si se ingresa 'exit'
+                unsigned threadID;
+                _beginthreadex(NULL, 0, &ClientHandler, (void*)&clients[clientCount], 0, &threadID);
+
+                clientCount++;
+
+                // Interacción con el cliente
+                while (1) {
+                    int clientChoice;
+                    printf("Selecciona el cliente con el que deseas hablar (0-%d) o -1 para salir: ", clientCount - 1);
+                    scanf("%d", &clientChoice);
+
+                    if (clientChoice == -1) {
+                        break; // Salir del bucle de interacción
+                    } else if (clientChoice >= 0 && clientChoice < clientCount) {
+                        char message[1000];
+                        printf("Escribe un mensaje para el cliente %d: ", clientChoice);
+                        scanf(" ");
+                        gets(message);
+
+                        strcat(message, "\n");
+                        send(clients[clientChoice].clientSocket, message, strlen(message), 0);
+                    } else {
+                        printf("Selección no válida.\n");
+                    }
+                }
+            }
+        } else {
+            printf("Límite de clientes alcanzado. No se aceptarán más conexiones.\n");
         }
-
-        strcat(message, "\n"); // Agregar un carácter de nueva línea al final del mensaje
-        send(clientSocket, message, strlen(message), 0);
     }
 
-    // Cerrar el socket del cliente
-    closesocket(clientSocket);
+    for (int i = 0; i < clientCount; i++) {
+        closesocket(clients[i].clientSocket);
+    }
 
-    // Cerrar el socket del servidor y limpiar Winsock
     closesocket(serverSocket);
     WSACleanup();
 
