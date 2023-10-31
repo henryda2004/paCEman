@@ -13,6 +13,8 @@
 struct ClientInfo {
     SOCKET clientSocket;
     int clientID;
+    char clientType; // 'P' para jugador, 'O' para observador
+    int observationTarget; // ID del jugador que el observador está observando
 };
 
 
