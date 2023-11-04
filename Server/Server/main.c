@@ -2,9 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <process.h>
-
-#define MAX_JUGADORES 2
-#define MAX_OBSERVADORES 4
+#include "constants.h"
 
 struct Jugador {
     int ID;
@@ -110,6 +108,10 @@ void clientHandler(SOCKET clientSocket) {
                 jugadores[numJugadores].clientSocket = clientSocket;
                 jugadores[numJugadores].puntos = 0;
                 printf("Nuevo Jugador ID: %d\n", jugadores[numJugadores].ID);
+                // Enviar el ID asignado al nuevo jugador
+                char idMessage[1024];
+                snprintf(idMessage, sizeof(idMessage), "ID %d\n", jugadores[numJugadores].ID);
+                send(clientSocket, idMessage, strlen(idMessage), 0);
                 numJugadores++;
             } else {
                 printf("Numero maximo de jugadores alcanzado\n");
@@ -119,10 +121,17 @@ void clientHandler(SOCKET clientSocket) {
                 int observadorID;
                 if (sscanf(buffer, "observador %d", &observadorID) == 1) {
                     // Crear un nuevo observador y asignarle un ID
-                    observadores[numObservadores].ID = observadorID;
-                    observadores[numObservadores].clientSocket = clientSocket;
-                    printf("Nuevo Observador ID: %d\n", observadores[numObservadores].ID);
-                    numObservadores++;
+                    if (observadorID > numJugadores){
+                        char errorMessage[1024];
+                        snprintf(errorMessage, sizeof(errorMessage), "ID no disponible\n", jugadores[numJugadores].ID);
+                        send(clientSocket, errorMessage, strlen(errorMessage), 0);
+                    }
+                    else {
+                        observadores[numObservadores].ID = observadorID;
+                        observadores[numObservadores].clientSocket = clientSocket;
+                        printf("Nuevo Observador ID: %d\n", observadores[numObservadores].ID);
+                        numObservadores++;
+                    }
                 } else {
                     printf("Formato de observador invalido\n");
                 }
@@ -143,8 +152,14 @@ void clientHandler(SOCKET clientSocket) {
                             printf("Jugador %d ha superado los 10,000 puntos.\n", playerId);
                             jugadores[i].puntos -= 10000;
                             char message[1024];
-                            snprintf(message, sizeof(message), "PuntosExcedidos %d", jugadores[i].puntos);
-                            send(jugadores[i].clientSocket, message, strlen(message), 0);
+                            snprintf(message, sizeof(message), "Vida %d\n", jugadores[i].puntos);
+                            sendMessageToPlayerID(playerId, message);
+                            updateObserver(playerId, message);
+                        } else {
+                            char message[1024];
+                            snprintf(message, sizeof(message), "puntaje %d\n", jugadores[i].puntos);
+                            sendMessageToPlayerID(playerId, message);
+                            updateObserver(playerId, message);
                         }
                         printf("Puntos totales de Jugador %d: %d\n", playerId, jugadores[i].puntos);
                         break;
@@ -152,10 +167,127 @@ void clientHandler(SOCKET clientSocket) {
                 }
             }
         }
+        if (strncmp(buffer, "fantasma", 8) == 0) {
+            int playerId;
+            if (sscanf(buffer, "fantasma %d", &playerId) == 1) {
+                printf("Jugador %d comio fantasma\n", playerId);
+                for (int i = 0; i < numJugadores; i++) {
+                    if (jugadores[i].ID == playerId) {
+                        jugadores[i].puntos += 500; // Añadir los puntos al jugador
+                        if (jugadores[i].puntos >= 10000) {
+                            printf("Jugador %d ha superado los 10,000 puntos.\n", playerId);
+                            jugadores[i].puntos -= 10000;
+                            char message[1024];
+                            snprintf(message, sizeof(message), "Vida %d\n", jugadores[i].puntos);
+                            sendMessageToPlayerID(playerId, message);
+                            updateObserver(playerId, message);
+                        } else {
+                            char message[1024];
+                            snprintf(message, sizeof(message), "puntaje %d\n", jugadores[i].puntos);
+                            sendMessageToPlayerID(playerId, message);
+                            updateObserver(playerId, message);
+                        }
+                        printf("Puntos totales de Jugador %d: %d\n", playerId, jugadores[i].puntos);
+                        break;
+                    }
+                }
+            }
+        }
+        if (strncmp(buffer, "pastilla", 8) == 0) {
+            int playerId;
+            if (sscanf(buffer, "pastilla %d", &playerId) == 1) {
+                printf("Jugador %d comio pastilla\n", playerId);
+                for (int i = 0; i < numJugadores; i++) {
+                    if (jugadores[i].ID == playerId) {
+                        jugadores[i].puntos += 100; // Añadir los puntos al jugador
+                        if (jugadores[i].puntos >= 10000) {
+                            printf("Jugador %d ha superado los 10,000 puntos.\n", playerId);
+                            jugadores[i].puntos -= 10000;
+                            char message[1024];
+                            snprintf(message, sizeof(message), "Vida %d\n", jugadores[i].puntos);
+                            sendMessageToPlayerID(playerId, message);
+                            updateObserver(playerId, message);
+                        } else {
+                            char message[1024];
+                            snprintf(message, sizeof(message), "puntaje %d\n", jugadores[i].puntos);
+                            sendMessageToPlayerID(playerId, message);
+                            updateObserver(playerId, message);
+                        }
+                        printf("Puntos totales de Jugador %d: %d\n", playerId, jugadores[i].puntos);
+                        break;
+                    }
+                }
+            }
+        }
+        if (strncmp(buffer, "fruta", 5) == 0) {
+            int playerId;
+            int puntos;
+            if (sscanf(buffer, "fruta %d %d", &playerId, &puntos) == 2) {
+                printf("Jugador %d comio fruta de %d puntos\n", playerId, puntos);
+                for (int i = 0; i < numJugadores; i++) {
+                    if (jugadores[i].ID == playerId) {
+                        jugadores[i].puntos += puntos; // Añadir los puntos al jugador
+                        if (jugadores[i].puntos >= 10000) {
+                            printf("Jugador %d ha superado los 10,000 puntos.\n", playerId);
+                            jugadores[i].puntos -= 10000;
+                            char message[1024];
+                            snprintf(message, sizeof(message), "Vida %d\n", jugadores[i].puntos);
+                            sendMessageToPlayerID(playerId, message);
+                            updateObserver(playerId, message);
+                        } else {
+                            char message[1024];
+                            snprintf(message, sizeof(message), "puntaje %d\n", jugadores[i].puntos);
+                            sendMessageToPlayerID(playerId, message);
+                            updateObserver(playerId, message);
+                        }
+                        printf("Puntos totales de Jugador %d: %d\n", playerId, jugadores[i].puntos);
+                        break;
+                    }
+                }
+            }
+        }
+
         if (strncmp(buffer, "nivel", 5) == 0) {
             sendMessageToPlayerID(1, buffer);
             updateObserver(1, buffer);
         }
+        if (strncmp(buffer, "derecha", 7) == 0) {
+            int playerId;
+            if (sscanf(buffer, "derecha %d", &playerId) == 1) {
+                printf("Jugador %d se movio a la derecha \n", playerId);
+                char message[1024];
+                snprintf(message, sizeof(message), "derecha\n");
+                updateObserver(playerId, message);
+            }
+        }
+        if (strncmp(buffer, "izquierda", 9) == 0) {
+            int playerId;
+            if (sscanf(buffer, "izquierda %d", &playerId) == 1) {
+                printf("Jugador %d se movio a la izquierda \n", playerId);
+                char message[1024];
+                snprintf(message, sizeof(message), "izquierda\n");
+                updateObserver(playerId, message);
+            }
+        }
+        if (strncmp(buffer, "arriba", 6) == 0) {
+            int playerId;
+            if (sscanf(buffer, "arriba %d", &playerId) == 1) {
+                printf("Jugador %d se movio hacia arriba \n", playerId);
+                char message[1024];
+                snprintf(message, sizeof(message), "arriba\n");
+                updateObserver(playerId, message);
+            }
+        }
+        if (strncmp(buffer, "abajo", 5) == 0) {
+            int playerId;
+            if (sscanf(buffer, "abajo %d", &playerId) == 1) {
+                printf("Jugador %d se movio hacia abajo \n", playerId);
+                char message[1024];
+                snprintf(message, sizeof(message), "abajo\n");
+                updateObserver(playerId, message);
+            }
+        }
+
     }
     closesocket(clientSocket);
 }

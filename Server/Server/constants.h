@@ -7,15 +7,8 @@
 
 #include <winsock.h>
 
-#define MAX_CLIENTS 8
-#define MAX_MESSAGE_LENGTH 1000
-
-struct ClientInfo {
-    SOCKET clientSocket;
-    int clientID;
-    char clientType; // 'P' para jugador, 'O' para observador
-    int observationTarget; // ID del jugador que el observador está observando
-};
+#define MAX_JUGADORES 2
+#define MAX_OBSERVADORES 4
 
 
 #endif //SERVER_CONSTANTS_H
