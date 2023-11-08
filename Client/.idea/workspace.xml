@@ -1,19 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="235be70a-b679-4ff0-ba56-00391c0f7ffd" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Client/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/Client.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/src/Main.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/src/SocketCliente.java" afterDir="false" />
+    <list default="true" id="93e93222-d653-478f-a903-75baa22bcd3c" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/tarea_3.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/out/.idea/out.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/out/production/tarea_3/InterfazMariana.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/out/production/tarea_3/code/.idea/code.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/out/production/tarea_3/out/production/InterfazMariana/InterfazMariana.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/out/production/tarea_3/out/production/InterfazMariana/code/.idea/code.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/src/InterfazMariana.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/src/code/.idea/code.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/src/out/production/InterfazMariana/InterfazMariana.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/src/out/production/InterfazMariana/code/.idea/code.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/tarea_3.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ClientAr/Client.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Server/Server/cmake-build-debug/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/Server/cmake-build-debug/.ninja_deps" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Server/Server/cmake-build-debug/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/Server/cmake-build-debug/.ninja_log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Server/Server/cmake-build-debug/CMakeFiles/Server.dir/main.c.obj" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/Server/cmake-build-debug/CMakeFiles/Server.dir/main.c.obj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/Server/cmake-build-debug/Server.exe" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/Server/cmake-build-debug/Server.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Server/Server/cmake-build-debug/Server.exe" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../Server/Server/cmake-build-debug/Testing/Temporary/LastTest.log" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/Server/cmake-build-debug/Testing/Temporary/LastTest.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Server/Server/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/Server/main.c" afterDir="false" />
     </list>
@@ -23,12 +30,9 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/Client" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="MarkdownSettingsMigration">
-    <option name="stateVersion" value="1" />
-  </component>
-  <component name="ProjectId" id="2X90clyjN4O3LTXSCNBauHqH1nv" />
+  <component name="ProjectId" id="2XsED4aI35uNBinTf43jSyuBrdY" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -38,17 +42,21 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "C:/Users/henry/Desktop/paCEman/Client"
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "last_opened_file_path": "C:/Users/henry/Desktop/paCEman/Client",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.0"
   }
 }]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="235be70a-b679-4ff0-ba56-00391c0f7ffd" name="Changes" comment="" />
-      <created>1698026069234</created>
+      <changelist id="93e93222-d653-478f-a903-75baa22bcd3c" name="Changes" comment="" />
+      <created>1699409264991</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1698026069234</updated>
+      <updated>1699409264991</updated>
     </task>
     <servers />
   </component>

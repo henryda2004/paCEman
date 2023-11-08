@@ -3,7 +3,9 @@
 #include <string.h>
 #include <process.h>
 #include "constants.h"
-
+/**
+ * Estrcutura que representa un jugador
+ */
 struct Jugador {
     int ID;
     SOCKET clientSocket;
@@ -11,7 +13,9 @@ struct Jugador {
     // Aquí puedes agregar más información específica del jugador si es necesario
     // Por ejemplo, nombre, puntaje, estado del juego, etc.
 };
-
+/**
+ * Estructura que representa un observador
+ */
 struct Observador {
     int ID;
     SOCKET clientSocket;
@@ -23,7 +27,12 @@ struct Observador observadores[MAX_OBSERVADORES]; // MAX_OBSERVADORES es la cant
 
 int numJugadores = 0;
 int numObservadores = 0;
-
+/**
+ * Nombre: sendMessageToPlayerID
+ * Descripcion: Permite enviar instrucciones al jugador segun lo ingresado por el usuario administrador en la consola
+ * @param targetID
+ * @param message
+ */
 void sendMessageToPlayerID(int targetID, const char* message) {
     char modifiedMessagePlayer[1024];
     if (strncmp(message, "CrearFantasma\n", 13) == 0) {
@@ -48,7 +57,12 @@ void sendMessageToPlayerID(int targetID, const char* message) {
         }
     }
 }
-
+/**
+ * Nombre: updateObserver
+ * Descripcion: Permite actualizar a los observadores asociados a un jugador sobre lo que ocurre en una partida
+ * @param targetID
+ * @param message
+ */
 void updateObserver(int targetID, const char* message) {
     char modifiedMessageObserver[1024];
     if (strncmp(message, "CrearFantasma\n", 13) == 0) {
@@ -73,7 +87,12 @@ void updateObserver(int targetID, const char* message) {
         }
     }
 }
-
+/**
+ * Nombre: selectPlayerByID
+ * Descripcion: Permite obtener todos los sockets asociados a un ID
+ * @param playerID
+ * @return
+ */
 SOCKET selectPlayerByID(int playerID) {
     for (int i = 0; i < numJugadores; i++) {
         if (jugadores[i].ID == playerID) {
@@ -82,12 +101,19 @@ SOCKET selectPlayerByID(int playerID) {
     }
     return INVALID_SOCKET; // Devuelve INVALID_SOCKET si el jugador no se encuentra
 }
-
+/**
+ * Nombre: clearInputBuffer
+ * Descripcion: Permite limpiar la lectura de consola para evitar errores de lectura
+ */
 void clearInputBuffer() {
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
 }
-
+/**
+ * Nombre: clientHandler
+ * Descripcion: Permite interpretar y reaccionar ante los avisos del jugador sobre hechos ocurridos en la partida
+ * @param clientSocket
+ */
 void clientHandler(SOCKET clientSocket) {
     char buffer[1024];
     int bytesRead;
@@ -99,7 +125,6 @@ void clientHandler(SOCKET clientSocket) {
             break;
         }
         buffer[bytesRead] = '\0';
-        printf("Client: %s\n", buffer);
 
         if (strncmp(buffer, "jugador", 7) == 0) {
             if (numJugadores < MAX_JUGADORES) {
@@ -144,12 +169,10 @@ void clientHandler(SOCKET clientSocket) {
             int playerId;
             int puntos;
             if (sscanf(buffer, "puntos %d %d", &playerId, &puntos) == 2) {
-                printf("Jugador %d comio %d puntos\n", playerId, puntos);
                 for (int i = 0; i < numJugadores; i++) {
                     if (jugadores[i].ID == playerId) {
                         jugadores[i].puntos += puntos*10; // Añadir los puntos al jugador
                         if (jugadores[i].puntos >= 10000) {
-                            printf("Jugador %d ha superado los 10,000 puntos.\n", playerId);
                             jugadores[i].puntos -= 10000;
                             char message[1024];
                             snprintf(message, sizeof(message), "Vida %d\n", jugadores[i].puntos);
@@ -161,7 +184,6 @@ void clientHandler(SOCKET clientSocket) {
                             sendMessageToPlayerID(playerId, message);
                             updateObserver(playerId, message);
                         }
-                        printf("Puntos totales de Jugador %d: %d\n", playerId, jugadores[i].puntos);
                         break;
                     }
                 }
@@ -170,12 +192,10 @@ void clientHandler(SOCKET clientSocket) {
         if (strncmp(buffer, "fantasma", 8) == 0) {
             int playerId;
             if (sscanf(buffer, "fantasma %d", &playerId) == 1) {
-                printf("Jugador %d comio fantasma\n", playerId);
                 for (int i = 0; i < numJugadores; i++) {
                     if (jugadores[i].ID == playerId) {
                         jugadores[i].puntos += 500; // Añadir los puntos al jugador
                         if (jugadores[i].puntos >= 10000) {
-                            printf("Jugador %d ha superado los 10,000 puntos.\n", playerId);
                             jugadores[i].puntos -= 10000;
                             char message[1024];
                             snprintf(message, sizeof(message), "Vida %d\n", jugadores[i].puntos);
@@ -187,7 +207,6 @@ void clientHandler(SOCKET clientSocket) {
                             sendMessageToPlayerID(playerId, message);
                             updateObserver(playerId, message);
                         }
-                        printf("Puntos totales de Jugador %d: %d\n", playerId, jugadores[i].puntos);
                         break;
                     }
                 }
@@ -196,12 +215,10 @@ void clientHandler(SOCKET clientSocket) {
         if (strncmp(buffer, "pastilla", 8) == 0) {
             int playerId;
             if (sscanf(buffer, "pastilla %d", &playerId) == 1) {
-                printf("Jugador %d comio pastilla\n", playerId);
                 for (int i = 0; i < numJugadores; i++) {
                     if (jugadores[i].ID == playerId) {
                         jugadores[i].puntos += 100; // Añadir los puntos al jugador
                         if (jugadores[i].puntos >= 10000) {
-                            printf("Jugador %d ha superado los 10,000 puntos.\n", playerId);
                             jugadores[i].puntos -= 10000;
                             char message[1024];
                             snprintf(message, sizeof(message), "Vida %d\n", jugadores[i].puntos);
@@ -213,7 +230,6 @@ void clientHandler(SOCKET clientSocket) {
                             sendMessageToPlayerID(playerId, message);
                             updateObserver(playerId, message);
                         }
-                        printf("Puntos totales de Jugador %d: %d\n", playerId, jugadores[i].puntos);
                         break;
                     }
                 }
@@ -223,12 +239,10 @@ void clientHandler(SOCKET clientSocket) {
             int playerId;
             int puntos;
             if (sscanf(buffer, "fruta %d %d", &playerId, &puntos) == 2) {
-                printf("Jugador %d comio fruta de %d puntos\n", playerId, puntos);
                 for (int i = 0; i < numJugadores; i++) {
                     if (jugadores[i].ID == playerId) {
                         jugadores[i].puntos += puntos; // Añadir los puntos al jugador
                         if (jugadores[i].puntos >= 10000) {
-                            printf("Jugador %d ha superado los 10,000 puntos.\n", playerId);
                             jugadores[i].puntos -= 10000;
                             char message[1024];
                             snprintf(message, sizeof(message), "Vida %d\n", jugadores[i].puntos);
@@ -240,7 +254,6 @@ void clientHandler(SOCKET clientSocket) {
                             sendMessageToPlayerID(playerId, message);
                             updateObserver(playerId, message);
                         }
-                        printf("Puntos totales de Jugador %d: %d\n", playerId, jugadores[i].puntos);
                         break;
                     }
                 }
@@ -254,7 +267,6 @@ void clientHandler(SOCKET clientSocket) {
         if (strncmp(buffer, "derecha", 7) == 0) {
             int playerId;
             if (sscanf(buffer, "derecha %d", &playerId) == 1) {
-                printf("Jugador %d se movio a la derecha \n", playerId);
                 char message[1024];
                 snprintf(message, sizeof(message), "derecha\n");
                 updateObserver(playerId, message);
@@ -263,7 +275,6 @@ void clientHandler(SOCKET clientSocket) {
         if (strncmp(buffer, "izquierda", 9) == 0) {
             int playerId;
             if (sscanf(buffer, "izquierda %d", &playerId) == 1) {
-                printf("Jugador %d se movio a la izquierda \n", playerId);
                 char message[1024];
                 snprintf(message, sizeof(message), "izquierda\n");
                 updateObserver(playerId, message);
@@ -272,7 +283,6 @@ void clientHandler(SOCKET clientSocket) {
         if (strncmp(buffer, "arriba", 6) == 0) {
             int playerId;
             if (sscanf(buffer, "arriba %d", &playerId) == 1) {
-                printf("Jugador %d se movio hacia arriba \n", playerId);
                 char message[1024];
                 snprintf(message, sizeof(message), "arriba\n");
                 updateObserver(playerId, message);
@@ -281,7 +291,6 @@ void clientHandler(SOCKET clientSocket) {
         if (strncmp(buffer, "abajo", 5) == 0) {
             int playerId;
             if (sscanf(buffer, "abajo %d", &playerId) == 1) {
-                printf("Jugador %d se movio hacia abajo \n", playerId);
                 char message[1024];
                 snprintf(message, sizeof(message), "abajo\n");
                 updateObserver(playerId, message);
@@ -291,7 +300,10 @@ void clientHandler(SOCKET clientSocket) {
     }
     closesocket(clientSocket);
 }
-
+/**
+ * Nombre: serverInputHandler
+ * Descripcion: Permite realizar el protocolo de comunicacion para enviar instrucciones a jugadores a partir de la consola
+ */
 void serverInputHandler() {
     char message[1024];
     int targetPlayerID;
@@ -300,7 +312,7 @@ void serverInputHandler() {
         printf("Ingrese el ID del jugador al que quiere enviar el mensaje: \n");
         if (scanf("%d", &targetPlayerID) != 1) {
             clearInputBuffer();
-            printf("ID de jugador no válido.\n");
+            printf("ID de jugador no valido.\n");
             continue;
         }
 
@@ -329,9 +341,11 @@ void serverInputHandler() {
         }
     }
 }
-
-
-
+/**
+ * Nombre: main
+ * Descripcion: Metodo que inicializa el socket servido para admitir conexiones
+ * @return
+ */
 int main() {
     WSADATA wsaData;
     if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
@@ -362,6 +376,9 @@ int main() {
 
     printf("Server listening on port 12345\n");
 
+    // Crear el hilo serverInputHandler antes de entrar en el bucle
+    _beginthread((void(*)(void*))serverInputHandler, 0, NULL);
+
     while (1) {
         SOCKET clientSocket;
         struct sockaddr_in clientAddr;
@@ -376,9 +393,6 @@ int main() {
 
         // Crear un subproceso para manejar la comunicación con el cliente.
         _beginthread((void(*)(void*))clientHandler, 0, (void*)clientSocket);
-
-        // Crear un subproceso para manejar la entrada desde la consola del servidor.
-        _beginthread((void(*)(void*))serverInputHandler, 0, (void*)clientSocket);
     }
 
     closesocket(serverSocket);
