@@ -18,7 +18,6 @@ struct Jugador {
 struct Observador {
     int ID;
     SOCKET clientSocket;
-    // Puedes agregar más información específica de los observadores si es necesario
 };
 
 struct Jugador jugadores[MAX_JUGADORES];
