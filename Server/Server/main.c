@@ -10,8 +10,7 @@ struct Jugador {
     int ID;
     SOCKET clientSocket;
     int puntos;
-    // Aquí puedes agregar más información específica del jugador si es necesario
-    // Por ejemplo, nombre, puntaje, estado del juego, etc.
+
 };
 /**
  * Estructura que representa un observador
@@ -19,11 +18,10 @@ struct Jugador {
 struct Observador {
     int ID;
     SOCKET clientSocket;
-    // Puedes agregar más información específica de los observadores si es necesario
 };
 
-struct Jugador jugadores[MAX_JUGADORES]; // MAX_JUGADORES es la cantidad máxima de jugadores
-struct Observador observadores[MAX_OBSERVADORES]; // MAX_OBSERVADORES es la cantidad máxima de observadores
+struct Jugador jugadores[MAX_JUGADORES];
+struct Observador observadores[MAX_OBSERVADORES]; 
 
 int numJugadores = 0;
 int numObservadores = 0;
