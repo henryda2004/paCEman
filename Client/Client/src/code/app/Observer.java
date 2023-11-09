@@ -5,9 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import javax.swing.ImageIcon;
-import javax.swing.JPanel;
-import javax.swing.Timer;
+import javax.swing.*;
 import java.util.Scanner;
 import java.io.*;
 import java.net.Socket;
@@ -224,6 +222,7 @@ public class Observer extends JPanel implements ActionListener {
 
         if (lives == 0) {
             inGame = false;
+            JOptionPane.showMessageDialog(this, "¡Perdiste!", "Game Over", JOptionPane.INFORMATION_MESSAGE);
         }
 
         continueLevel();
